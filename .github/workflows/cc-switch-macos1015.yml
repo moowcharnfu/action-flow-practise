@@ -44,7 +44,7 @@ jobs:
           targets: ${{ matrix.target }}
 
       - name: Add macOS targets
-        if: runner.os == 'macOS'
+        if: startsWith(matrix.platform, 'macos')
         run: |
           rustup target add aarch64-apple-darwin x86_64-apple-darwin
 
@@ -62,7 +62,10 @@ jobs:
 
       - name: Install frontend deps
         working-directory: repo
-        run: pnpm install --frozen-lockfile
+        run: |
+          npm i baseline-browser-mapping@latest -D
+          pnpm run build:renderer
+          pnpm install --frozen-lockfile
 
       - name: Build Tauri App (macOS)
         working-directory: repo
