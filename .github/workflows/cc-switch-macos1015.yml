@@ -32,9 +32,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Get latest tag from upstream repo
+        id: get_tag
+        env:
+          REPO: farion1231/cc-switch
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 如果是私有仓库请改用有访问权限的 PAT
+        run: |
+          # 1) 先尝试用 releases/latest（仓库有 release 时很可靠）
+          tag=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" \
+            "https://api.github.com/repos/$REPO/releases/latest" \
+            | python3 -c "import sys,json; j=json.load(sys.stdin); print(j.get('tag_name') or '')")
+          # 2) 如果没有 release，再用 tags 列表取第一个（按 API 返回顺序，或 per_page=1）
+          if [ -z "$tag" ]; then
+            tag=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" \
+              "https://api.github.com/repos/$REPO/tags?per_page=1" \
+              | python3 -c "import sys,json; j=json.load(sys.stdin); print(j[0]['name'] if j else '')")
+          fi
+          # 失败处理（可改为 fallback 到主分支或直接报错）
+          if [ -z "$tag" ]; then
+            echo "No tag found from API" >&2
+            exit 1
+          fi
+          echo "Found tag: $tag"
+          echo "tag=$tag" >> $GITHUB_OUTPUT
+
       # 1. 从外部克隆代码（替换为你的真实仓库地址）
       - name: Clone external repository
-        run: git clone https://github.com/farion1231/cc-switch.git --branch v3.16.5 --depth 1 repo
+        run: git clone https://github.com/farion1231/cc-switch.git --branch ${{ steps.get_tag.outputs.tag }} --depth 1 repo
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
