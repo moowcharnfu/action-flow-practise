@@ -70,6 +70,7 @@ jobs:
         run: npm install
 
       - name: Build frontend
+        working-directory: repo
         run: npm run build
 
       - name: Build Tauri app
@@ -79,6 +80,7 @@ jobs:
         run: npm run tauri:build
 
       - name: List Build bundle
+        working-directory: repo
         run: |
           echo "构建的文件："
           ls -R src-tauri/target/release/bundle/
