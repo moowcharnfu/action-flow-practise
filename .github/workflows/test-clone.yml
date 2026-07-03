@@ -83,7 +83,7 @@ jobs:
         working-directory: repo
         run: |
           echo "构建的文件："
-          ls -R src-tauri/target/release/bundle/
+          ls -R repo/src-tauri/target/release/bundle/
 
       - name: Upload bundle(exe)
         uses: actions/upload-artifact@v4
