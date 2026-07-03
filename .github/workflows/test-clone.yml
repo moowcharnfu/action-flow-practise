@@ -1,5 +1,5 @@
 # macos-15-intel 打x86包
-name: Release CI
+name: Release-test CI
 
 on:
   workflow_dispatch: # 允许手动触发，方便测试
@@ -178,7 +178,7 @@ jobs:
             ./release-assets/*
             ./release-assets/**/*
           tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
+          name: Release-test ${{ github.ref_name }}
           body: |
             Automated release for ${{ github.ref_name }}.
             
