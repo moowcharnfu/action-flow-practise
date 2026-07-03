@@ -51,6 +51,7 @@ jobs:
           rustup target list --installed
 
       - name: Set macOS deployment target
+        working-directory: repo
         run: |
           echo "MACOSX_DEPLOYMENT_TARGET=${{ matrix.deployment_target }}" >> $GITHUB_ENV
           echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> $GITHUB_ENV
@@ -71,7 +72,7 @@ jobs:
         working-directory: repo
         run: |
           echo "构建的文件："
-          ls -R src-tauri/target/release/bundle/
+          ls -R repo/src-tauri/target/release/bundle/
 
       - name: Upload bundle(dmg-${{ matrix.bundle }})
         uses: actions/upload-artifact@v4
