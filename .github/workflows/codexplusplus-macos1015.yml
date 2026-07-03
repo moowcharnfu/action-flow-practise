@@ -72,13 +72,13 @@ jobs:
         working-directory: repo
         run: |
           echo "构建的文件："
-          ls -R ./
+          ls -R ./target/
 
       - name: Upload bundle(dmg-${{ matrix.bundle }})
         uses: actions/upload-artifact@v4
         with:
           name: bundle-${{ matrix.bundle }}.dmg
-          path: target/*/release/**/*.dmg
+          path: repo/target/*/release/**/*.dmg
           if-no-files-found: warn
 
   release:
