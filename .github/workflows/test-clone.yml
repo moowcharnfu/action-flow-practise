@@ -209,6 +209,13 @@ jobs:
           cat checksums.txt
           echo "文件大小：" $(wc -c < checksums.txt) "字节"
 
+      - name: Read checksums into output
+        id: checksums
+        run: |
+          echo "checksums<<EOF" >> $GITHUB_OUTPUT
+          cat ./release-assets/checksums.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -222,7 +229,7 @@ jobs:
             
             &zwnj;**校验和：**&zwnj;
             ```
-            $(cat ./release-assets/checksums.txt)
+            ${{ steps.checksums.outputs.checksums }}
             ```
           draft: false
           prerelease: false
