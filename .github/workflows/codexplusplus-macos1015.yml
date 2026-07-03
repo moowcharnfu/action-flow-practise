@@ -72,6 +72,7 @@ jobs:
         working-directory: repo
         run: |
           echo "构建的文件："
+          ls -R repo/
           ls -R repo/src-tauri/target/release/bundle/
 
       - name: Upload bundle(dmg-${{ matrix.bundle }})
