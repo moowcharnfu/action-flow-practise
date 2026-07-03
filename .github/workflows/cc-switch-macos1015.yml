@@ -127,6 +127,14 @@ jobs:
     # 可选：如果坚持使用 GITHUB_TOKEN，需在此处声明 permissions: contents: write
     # 但使用 PAT 时，权限由 PAT 本身的 scope 决定，此处可不写或保留默认
     steps:
+      # 设置时间戳
+      - name: Get Current Time
+        id: time_step # 设置 step ID，以便后续引用
+        run: echo "current_time=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Use Current Time
+        run: echo "The current time is ${{ steps.time_step.outputs.current_time }}"
+        
       - name: Download All Artifacts
         uses: actions/download-artifact@v4
         with:
@@ -177,14 +185,14 @@ jobs:
           files: |
             ./release-assets/*
             ./release-assets/**/*
-          tag_name: ${{ github.ref_name }}
-          name: Release-cc-switch ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}-${{ steps.time_step.outputs.current_time }}
+          name: Release-cc-switch-${{ github.ref_name }}-${{ steps.time_step.outputs.current_time }}
           body: |
             Automated release for ${{ github.ref_name }}.
             
             &zwnj;**校验和：**&zwnj;
             ```
-            只做mac低版本构建, 非低版本请从cc-switch处下载, 本处不做签名验证
+            只做mac低版本构建, 非低版本请从原项目处下载, 本处不做签名验证
             ```
           draft: false
           prerelease: false
