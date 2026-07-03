@@ -54,6 +54,13 @@ jobs:
         run: |
           echo "MACOSX_DEPLOYMENT_TARGET=${{ matrix.deployment_target }}" >> $GITHUB_ENV
           echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> $GITHUB_ENV
+          # 不做签名验证
+          sed -i '' 's/"createUpdaterArtifacts": true/"createUpdaterArtifacts": false/' repo/src-tauri/tauri.conf.json
+          sed -i '' '/"pubkey":/i\
+                "active": false,
+          ' repo/src-tauri/tauri.conf.json
+          tail -n 10 repo/src-tauri/tauri.conf.json
+
           
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
@@ -177,7 +184,7 @@ jobs:
             
             &zwnj;**校验和：**&zwnj;
             ```
-            $(cat ./release-assets/checksums.txt)
+            只做mac低版本构建, 非低版本请从cc-switch处下载, 本处不做签名验证
             ```
           draft: false
           prerelease: false
