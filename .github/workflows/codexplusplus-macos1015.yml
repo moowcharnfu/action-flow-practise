@@ -136,10 +136,21 @@ jobs:
       - name: List Downloaded Assets
         run: |
           echo "下载的资产文件："
-          find ./release-assets -type f -exec ls -lh {} \;
+          if [ -d "./release-assets" ]; then
+            files=$(find ./release-assets -type f)
+            if [ -z "$files" ]; then
+              echo "No asset files found in ./release-assets"
+            else
+              find ./release-assets -type f -exec ls -lh {} \;
+            fi
+          else
+            echo "./release-assets does not exist; no artifacts downloaded."
+          fi
 
       - name: Generate Checksums
         run: |
+          # 确保目录存在，避免因为没有下载到任何资产而 cd 失败
+          mkdir -p ./release-assets
           cd ./release-assets
           
           # 列出所有文件
