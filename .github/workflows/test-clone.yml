@@ -2,9 +2,10 @@
 name: Release CI
 
 on:
-  push:
-    tags:
-      - 'clone*' # 触发标签或者分支
+  workflow_dispatch: # 允许手动触发，方便测试
+  # push:
+    # tags:
+      # - 'clone*' # 触发标签或者分支
       
 permissions:
   contents: write # 必须授予写入权限才能上传 Release
