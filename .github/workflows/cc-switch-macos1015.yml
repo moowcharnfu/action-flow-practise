@@ -44,12 +44,11 @@ jobs:
           targets: ${{ matrix.target }}
 
       - name: Add macOS targets
-        if: startsWith(matrix.platform, 'macos')
         run: |
-          rustup target add aarch64-apple-darwin x86_64-apple-darwin
+          rustup target add aarch64-apple-darwin
+          rustup target add x86_64-apple-darwin
 
       - name: Set macOS deployment target
-        if: startsWith(matrix.platform, 'macos')
         run: |
           echo "MACOSX_DEPLOYMENT_TARGET=${{ matrix.deployment_target }}" >> $GITHUB_ENV
           echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> $GITHUB_ENV
@@ -69,7 +68,6 @@ jobs:
 
       - name: Build Tauri App (macOS)
         working-directory: repo
-        if: startsWith(matrix.platform, 'macos')
         shell: bash
         timeout-minutes: 60
         run: |
