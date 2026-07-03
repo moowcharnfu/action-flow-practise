@@ -31,7 +31,7 @@ jobs:
 
       # 1. 从外部克隆代码（替换为你的真实仓库地址）
       - name: Clone external repository
-        run: git clone https://github.com/farion1231/cc-switch.git --branch v3.16.5 repo
+        run: git clone https://github.com/farion1231/cc-switch.git --branch v3.16.5 --depth 1 repo
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -65,11 +65,11 @@ jobs:
         run: |
           npm i baseline-browser-mapping@latest -D
           pnpm run build:renderer
-          pnpm install --frozen-lockfile
+          pnpm install --no-frozen-lockfile
 
       - name: Build Tauri App (macOS)
         working-directory: repo
-        if: runner.os == 'macOS'
+        if: startsWith(matrix.platform, 'macos')
         shell: bash
         timeout-minutes: 60
         run: |
