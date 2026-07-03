@@ -59,12 +59,25 @@ jobs:
           version: 10.12.3
           run_install: false
 
-      - name: Install frontend deps
+      - name: Install frontend deps 1
         working-directory: repo
         run: |
           npm i baseline-browser-mapping@latest -D
-          pnpm run build:renderer
+
+      - name: Install frontend deps 2
+        working-directory: repo
+        run: |
+          pnpm add -D @tauri-apps/cli@latest
+
+      - name: Install frontend deps 3
+        working-directory: repo
+        run: |
           pnpm install --no-frozen-lockfile
+
+      - name: Install frontend deps 4
+        working-directory: repo
+        run: |
+          pnpm run build:renderer
 
       - name: Build Tauri App (macOS)
         working-directory: repo
