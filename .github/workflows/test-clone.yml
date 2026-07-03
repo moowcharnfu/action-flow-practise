@@ -32,6 +32,9 @@ jobs:
             bundle: windows-x86_64
 
     runs-on: ${{ matrix.platform }}
+    env:
+      ACTIONS_RUNNER_DEBUG: true # 开启 Runner 调试日志
+      ACTIONS_STEP_DEBUG: true   # 开启步骤调试日志（推荐同时开启）
     steps:
       - uses: actions/checkout@v4
 
