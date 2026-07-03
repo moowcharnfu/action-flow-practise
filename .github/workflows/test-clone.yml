@@ -178,7 +178,7 @@ jobs:
             ./release-assets/*
             ./release-assets/**/*
           tag_name: ${{ github.ref_name }}
-          name: Release-test ${{ github.ref_name }}
+          name: Release test ${{ github.ref_name }}
           body: |
             Automated release for ${{ github.ref_name }}.
             
