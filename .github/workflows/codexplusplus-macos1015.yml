@@ -100,7 +100,7 @@ jobs:
         working-directory: repo
         run: |
           echo "构建的文件1："
-          ls -R ./target/**/codex-plus-plus*
+          ls -R ./target
           # 复制所有匹配 codex-plus-plus* 的文件，文件名追加平台后缀
           mkdir -p target/bundles-new
           find ./target -type f -name 'codex-plus-plus*' -print0 | while IFS= read -r -d '' f; do
@@ -109,7 +109,7 @@ jobs:
             cp "$f" "./target/bundles-new/${base}-${{ matrix.bundle }}"
           done
           echo "构建的文件2："
-          ls -R ./target/**/codex-plus-plus*
+          ls -R ./target/bundles-new/codex-plus-plus*
 
       - name: Upload bundle(dmg-${{ matrix.bundle }})
         uses: actions/upload-artifact@v4
