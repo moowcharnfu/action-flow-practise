@@ -99,21 +99,20 @@ jobs:
       - name: Build macOS DMG
         working-directory: repo
         run: |
-          mkdir -p target/bundles-new
           VERSION="release"
-          BINARY_DIR="./target/bundles-new" bash scripts/installer/macos/package-dmg.sh "$VERSION" "${{ matrix.target }}"
+          BINARY_DIR="./target/${{ matrix.target }}/release" bash scripts/installer/macos/package-dmg.sh "$VERSION" "${{ matrix.target }}"
 
       - name: List Build bundle
         working-directory: repo
         run: |
           echo "构建的文件："
-          ls -R ./target/bundles-new
+          ls -R ./target
 
       - name: Upload bundle(dmg-${{ matrix.bundle }})
         uses: actions/upload-artifact@v4
         with:
           name: bundle-${{ matrix.bundle }}.dmg
-          path: repo/target/bundles-new/*.dmg
+          path: repo/target/**/*.dmg
           if-no-files-found: warn
 
   release:
