@@ -106,7 +106,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bundle-${{ matrix.bundle }}.dmg
-          path: repo/target/**/*.dmg
+          path: repo/target/**/codex-plus-plus*
           if-no-files-found: warn
 
   release:
