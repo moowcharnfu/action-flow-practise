@@ -106,7 +106,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bundle-${{ matrix.bundle }}.dmg
-          path: repo/target/*/release/**/*.dmg
+          path: repo/target/**/*.dmg
           if-no-files-found: warn
 
   release:
