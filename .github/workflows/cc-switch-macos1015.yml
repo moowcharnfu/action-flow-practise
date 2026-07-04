@@ -142,7 +142,7 @@ jobs:
           ls -R src-tauri/target/
           # 复制所有匹配 dmg文件，文件名追加平台后缀
           mkdir bundles-new
-          find ./target -type f -name '*.dmg' -print0 | while IFS= read -r -d '' f; do
+          find ./src-tauri/target -type f -name '*.dmg' -print0 | while IFS= read -r -d '' f; do
             base=$(basename "$f")
             echo "复制 $f -> ./bundles-new/${base}-${{ matrix.bundle }}.dmg"
             cp "$f" "./bundles-new/${base}-${{ matrix.bundle }}.dmg"
