@@ -140,12 +140,21 @@ jobs:
         run: |
           echo "构建的文件："
           ls -R src-tauri/target/
+          # 复制所有匹配 dmg文件，文件名追加平台后缀
+          mkdir -p target/bundles-new
+          find ./target -type f -name '*.dmg' -print0 | while IFS= read -r -d '' f; do
+            base=$(basename "$f")
+            echo "复制 $f -> ./target/bundles-new/${base}-${{ matrix.bundle }}.dmg"
+            cp "$f" "./target/bundles-new/${base}-${{ matrix.bundle }}.dmg"
+          done
+          echo "构建的文件2："
+          ls -R ./target/bundles-new
 
       - name: Upload bundle(dmg-${{ matrix.bundle }})
         uses: actions/upload-artifact@v4
         with:
           name: bundle-${{ matrix.bundle }}.dmg
-          path: repo/src-tauri/target/*/release/bundle/**/*.dmg
+          path: repo/src-tauri/target/bundles-new/*.dmg
           if-no-files-found: warn
 
   release:
