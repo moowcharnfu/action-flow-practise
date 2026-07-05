@@ -120,7 +120,7 @@ jobs:
         working-directory: repo
         env:
           MACOSX_DEPLOYMENT_TARGET: ${{ matrix.deployment_target }}
-        run: npm run tauri:build --target universal-apple-darwin
+        run: npm run tauri:build -- --target universal-apple-darwin # -- --target多一个--避免认为是npm参数
         
       - name: List Build bundle
         working-directory: repo
