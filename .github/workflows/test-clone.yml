@@ -126,9 +126,10 @@ jobs:
         working-directory: repo
         run: |
           echo "构建的文件："
-          ls -R src-tauri/target/release/bundle/
+          ls -R src-tauri/target/
 
       - name: Upload bundle(exe)
+        if: startsWith(matrix.bundle, 'windows')
         uses: actions/upload-artifact@v4
         with:
           name: bundle-${{ matrix.bundle }}.exe
@@ -136,13 +137,15 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload bundle(dmg-${{ matrix.bundle }})
+        if: startsWith(matrix.bundle, 'macos')
         uses: actions/upload-artifact@v4
         with:
           name: bundle-${{ matrix.bundle }}.dmg
-          path: repo/src-tauri/target/release/bundle/**/*.dmg
+          path: repo/src-tauri/target/**/release/bundle/**/*.dmg
           if-no-files-found: warn
 
       - name: Upload bundle(AppImage)
+        if: startsWith(matrix.bundle, 'linux')
         uses: actions/upload-artifact@v4
         with:
           name: bundle-${{ matrix.bundle }}.AppImage
@@ -150,6 +153,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload bundle(deb)
+        if: startsWith(matrix.bundle, 'linux')
         uses: actions/upload-artifact@v4
         with:
           name: bundle-${{ matrix.bundle }}.deb
@@ -157,6 +161,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload bundle(rpm)
+        if: startsWith(matrix.bundle, 'linux')
         uses: actions/upload-artifact@v4
         with:
           name: bundle-${{ matrix.bundle }}.rpm
