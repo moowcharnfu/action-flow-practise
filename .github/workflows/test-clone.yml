@@ -76,6 +76,14 @@ jobs:
         with:
           targets: ${{ matrix.target }}
 
+      - name: Add macOS targets
+        if: startsWith(matrix.platform, 'macos')
+        working-directory: repo
+        run: |
+          rustup target add aarch64-apple-darwin
+          rustup target add x86_64-apple-darwin
+          rustup target list --installed
+
       - name: Install dependencies (Ubuntu only)
         if: matrix.platform == 'ubuntu-latest'
         run: |
@@ -101,11 +109,19 @@ jobs:
         run: npm run build
 
       - name: Build Tauri app
+        if: ${{ !startsWith(matrix.platform, 'macos') }}
         working-directory: repo
         env:
           MACOSX_DEPLOYMENT_TARGET: ${{ matrix.deployment_target }}
         run: npm run tauri:build
 
+      - name: Build Tauri app(macos)
+        if: startsWith(matrix.platform, 'macos')
+        working-directory: repo
+        env:
+          MACOSX_DEPLOYMENT_TARGET: ${{ matrix.deployment_target }}
+        run: npm run tauri:build --target universal-apple-darwin
+        
       - name: List Build bundle
         working-directory: repo
         run: |
