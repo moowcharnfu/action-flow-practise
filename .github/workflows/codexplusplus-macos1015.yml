@@ -70,6 +70,7 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
+          toolchain: 1.70.0 # 替换为已知兼容 10.15 的版本
           targets: ${{ matrix.target }}
 
       - name: Add macOS targets
