@@ -16,7 +16,8 @@ jobs:
       fail-fast: false # 防翻车配置：一个平台失败不影响其他平台继续构建
       matrix:
         include:
-          - platform: macos-15-intel
+          #- platform: macos-15-intel
+          - platform: macos-latest
             target: x86_64-apple-darwin
             bundle: macos-x86_64
             deployment_target: '10.15'
