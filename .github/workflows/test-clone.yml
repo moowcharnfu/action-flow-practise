@@ -130,7 +130,7 @@ jobs:
 
       # --- 关键修改：构建步骤 ---
       - name: Build Tauri App
-        working-directory: ./
+        working-directory: repo
         if: ${{ !startsWith(matrix.bundle_name, 'universal-') }}
         run: |          
           # 执行构建，指定 Target
@@ -140,7 +140,7 @@ jobs:
       # --- 关键修改：构建步骤 ---
       - name: Build Tauri App
         if: startsWith(matrix.bundle_name, 'universal-')
-        working-directory: ./
+        working-directory: repo
         run: |          
           # 执行构建，指定 Target
           # 注意：这里不需要双重 --，npm run script -- args 会自动传递
@@ -148,7 +148,7 @@ jobs:
 
       # --- 调试步骤：确认文件生成 ---
       - name: Check Build Output
-        working-directory: ./
+        working-directory: repo
         run: |
           echo "--- Checking Bundle Directory ---"
           # Tauri v2 的路径通常是 target/<target>/release/bundle
@@ -162,10 +162,10 @@ jobs:
           name: bundle-${{ matrix.bundle_name }}
           # 使用通配符匹配 dmg, exe, deb 等
           path: |
-            src-tauri/target/**/release/bundle/**/*.dmg
-            src-tauri/target/**/release/bundle/**/*.exe
-            src-tauri/target/**/release/bundle/**/*.AppImage
-            src-tauri/target/**/release/bundle/**/*.deb
+            repo/src-tauri/target/**/release/bundle/**/*.dmg
+            repo/src-tauri/target/**/release/bundle/**/*.exe
+            repo/src-tauri/target/**/release/bundle/**/*.AppImage
+            repo/src-tauri/target/**/release/bundle/**/*.deb
           if-no-files-found: error # 如果没找到文件直接报错，不要静默失败
 
   release:
