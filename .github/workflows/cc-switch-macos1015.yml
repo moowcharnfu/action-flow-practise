@@ -20,7 +20,7 @@ jobs:
           - platform: macos-latest 
             target: universal-apple-darwin
             bundle_name: universal-macos
-            deployment_target: '11.0'
+            deployment_target: '10.15'
 
     runs-on: ${{ matrix.platform }}
     env:
