@@ -16,13 +16,10 @@ jobs:
       fail-fast: false # 防翻车配置：一个平台失败不影响其他平台继续构建
       matrix:
         include:
-          - platform: macos-15-intel
-            target: x86_64-apple-darwin
-            bundle: macos-x86_64
-            deployment_target: '10.15'
-          - platform: macos-latest
-            target: aarch64-apple-darwin
-            bundle: macos-aarch64
+          # macOS Apple Silicon (原生构建)
+          - platform: macos-latest 
+            target: universal-apple-darwin
+            bundle_name: universal-macos
             deployment_target: '11.0'
 
     runs-on: ${{ matrix.platform }}
@@ -67,9 +64,16 @@ jobs:
           node-version: '24'
 
       - name: Setup Rust
+        if: ${{ !startsWith(matrix.bundle_name, 'universal-') }}
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
+
+      - name: Setup Rust
+        if: startsWith(matrix.bundle_name, 'universal-')
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
 
       - name: Add macOS targets
         working-directory: repo
@@ -94,13 +98,14 @@ jobs:
 
       - name: Build binaries
         working-directory: repo
-        run: cargo build --release --target ${{ matrix.target }}
+        run: cargo build --release --target universal-apple-darwin
 
       - name: Build macOS DMG
         working-directory: repo
         run: |
           VERSION="release"
-          BINARY_DIR="./target/${{ matrix.target }}/release" bash scripts/installer/macos/package-dmg.sh "$VERSION" "${{ matrix.target }}"
+          BINARY_DIR="./target/x86_64-apple-darwin/release" bash scripts/installer/macos/package-dmg.sh "$VERSION" "x86_64-apple-darwin"
+          BINARY_DIR="./target/aarch64-apple-darwin/release" bash scripts/installer/macos/package-dmg.sh "$VERSION" "aarch64-apple-darwin"
 
       - name: List Build bundle
         working-directory: repo
@@ -109,10 +114,10 @@ jobs:
           ls -R ./target
           ls -R ./dist
 
-      - name: Upload bundle(dmg-${{ matrix.bundle }})
+      - name: Upload bundle(dmg-${{ matrix.bundle_name }})
         uses: actions/upload-artifact@v4
         with:
-          name: bundle-${{ matrix.bundle }}.dmg
+          name: bundle-${{ matrix.bundle_name }}.dmg
           path: repo/dist/macos/*.dmg
           if-no-files-found: warn
 
