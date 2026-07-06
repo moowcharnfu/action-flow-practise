@@ -16,13 +16,10 @@ jobs:
       fail-fast: false # 防翻车配置：一个平台失败不影响其他平台继续构建
       matrix:
         include:
-          - platform: macos-15-intel
-            target: x86_64-apple-darwin
-            bundle: macos-x86_64
-            deployment_target: '10.15'
-          - platform: macos-latest
-            target: aarch64-apple-darwin
-            bundle: macos-aarch64
+          # macOS Apple Silicon (原生构建)
+          - platform: macos-latest 
+            target: universal-apple-darwin
+            bundle_name: universal-macos
             deployment_target: '11.0'
 
     runs-on: ${{ matrix.platform }}
@@ -67,9 +64,16 @@ jobs:
           node-version: '24'
 
       - name: Setup Rust
+        if: ${{ !startsWith(matrix.bundle_name, 'universal-') }}
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
+
+      - name: Setup Rust
+        if: startsWith(matrix.bundle_name, 'universal-')
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
 
       - name: Add macOS targets
         working-directory: repo
@@ -144,16 +148,16 @@ jobs:
           mkdir bundles-new
           find ./src-tauri/target -type f -name '*.dmg' -print0 | while IFS= read -r -d '' f; do
             base=$(basename "$f")
-            echo "复制 $f -> ./bundles-new/${base}-${{ matrix.bundle }}.dmg"
-            cp "$f" "./bundles-new/${base}-${{ matrix.bundle }}.dmg"
+            echo "复制 $f -> ./bundles-new/${base}-${{ matrix.bundle_name }}.dmg"
+            cp "$f" "./bundles-new/${base}-${{ matrix.bundle_name }}.dmg"
           done
           echo "构建的文件2："
           ls -R ./bundles-new
 
-      - name: Upload bundle(dmg-${{ matrix.bundle }})
+      - name: Upload bundle(dmg-${{ matrix.bundle_name }})
         uses: actions/upload-artifact@v4
         with:
-          name: bundle-${{ matrix.bundle }}.dmg
+          name: bundle-${{ matrix.bundle_name }}.dmg
           path: repo/bundles-new/*.dmg
           if-no-files-found: warn
 
