@@ -98,7 +98,18 @@ jobs:
 
       - name: Build binaries
         working-directory: repo
-        run: cargo build --release --target universal-apple-darwin
+        run: |
+          # Build for x86_64
+          cargo build --release --target x86_64-apple-darwin
+          
+          # Build for aarch64
+          cargo build --release --target aarch64-apple-darwin
+          
+          # 合并
+          #lipo \
+          #    target/x86_64-apple-darwin/release/你的程序名 \
+          #    target/aarch64-apple-darwin/release/你的程序名 \
+          #    -create -output target/universal/release/你的程序名
 
       - name: Build macOS DMG
         working-directory: repo
